@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Oracle.ManagedDataAccess.Client;
 
 namespace RestAPI.Controllers
 {
@@ -11,9 +13,39 @@ namespace RestAPI.Controllers
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                string con = "Data Source=(DESCRIPTION =(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST = 45.32.22.223)(PORT = 49161)))(CONNECT_DATA =(SERVICE_NAME = xe)));User Id=system;Password=oracle;";
+
+                //string oradb = "Data Source=45.32.22.223:49161/practicas1;User Id=practicasuser;Password=practicasuser14;";
+                string oradb = "Data Source=45.32.22.223:49161/xe;User Id=practicas1;Password=practicas114;";
+
+                using (var conn = new OracleConnection(oradb))
+                {
+
+                    conn.Open();
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = conn;
+                    cmd.CommandText = "select count(1) from factura";
+                    cmd.CommandType = CommandType.Text;
+                    //OracleDataReader dr = cmd.ExecuteReader();
+                    //dr.Read();
+
+                    using (var da = new OracleDataAdapter(cmd))
+                    {
+                        var dt = new DataTable();
+                        da.Fill(dt);
+
+                        return dt.Rows.Count.ToString();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
         }
 
         // GET api/values/5
