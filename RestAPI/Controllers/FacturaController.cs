@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Oracle.ManagedDataAccess.Client;
 
-namespace RestAPI.Controllers
+namespace RestAPIOracle.Controllers
 {
     [Produces("application/json")]
     [Route("api/Factura")]
@@ -15,28 +15,20 @@ namespace RestAPI.Controllers
     {
         // GET: api/Factura
         [HttpGet]
-        public String Get()
+        public Object Get()
         {
             try
             {
-                string con = "Data Source=(DESCRIPTION =(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST = 45.32.22.223)(PORT = 1521)))(CONNECT_DATA =(SERVICE_NAME = database)));User Id=practicasuser;Password=practicasuser14;";
+                var dt = Datos.EjecutarProcedimiento("proc_factura_sel");
 
-                string oradb = "Data Source=45.32.22.223;User Id=practicasuser;Password=practicasuser14;";
-                OracleConnection conn = new OracleConnection(con);  // C#
-                conn.Open();
-                OracleCommand cmd = new OracleCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = "select count(1) from factura;";
-                cmd.CommandType = CommandType.Text;
-                OracleDataReader dr = cmd.ExecuteReader();
-                dr.Read();
-                conn.Dispose();
+                var data = from item in dt.AsEnumerable()
+                           select item.AsDictionary();
 
-                return "ok";
+                return new { data };
             }
-            catch ( Exception e)
+            catch (Exception e)
             {
-                return e.ToString();
+                return new { error = e.ToString() };
             }
         }
 
