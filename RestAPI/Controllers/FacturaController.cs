@@ -22,7 +22,8 @@ namespace RestAPIOracle.Controllers
                 using (var db = new Models.MyFacturaContext())
                 {
                     var data = db.Facturas.ToList();
-                    return new { data };
+                    var total = data.Count();
+                    return new { data,total };
                 }
             }
             catch (Exception e)
@@ -40,7 +41,8 @@ namespace RestAPIOracle.Controllers
                 using (var db = new Models.MyFacturaContext())
                 {
                     var data = db.Facturas.Where(item => item.IDFactura == id).ToList();
-                    return new { data };
+                    var total = data.Count();
+                    return new { data , total};
                 }
             }
             catch (Exception e)
