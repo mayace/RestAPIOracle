@@ -20,11 +20,17 @@ namespace RestAPIOracle
                 cmd.Connection = conn;
                 cmd.CommandText = name;
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddRange(parametros);
 
-                var qref = new OracleParameter("qcur",OracleDbType.RefCursor);
+
+                var qref = new OracleParameter("qref", OracleDbType.RefCursor);
                 qref.Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(qref);
+
+                if (parametros.Length > 0)
+                {
+                    cmd.Parameters.AddRange(parametros);
+                }
+
 
                 using (var da = new OracleDataAdapter(cmd))
                 {
@@ -44,7 +50,7 @@ namespace RestAPIOracle
             }
         }
 
-        public static Dictionary<string,Object> AsDictionary(this DataRow dr)
+        public static Dictionary<string, Object> AsDictionary(this DataRow dr)
         {
             var dict = new Dictionary<string, Object>();
             foreach (DataColumn item in dr.Table.Columns)
