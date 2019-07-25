@@ -19,12 +19,11 @@ namespace RestAPIOracle.Controllers
         {
             try
             {
-                var dt = Datos.EjecutarProcedimiento("proc_factura_sel");
-
-                var data = from item in dt.AsEnumerable()
-                           select item.AsDictionary();
-
-                return new { data };
+                using (var db = new Models.MyFacturaContext())
+                {
+                    var data = db.Facturas.ToList();
+                    return new { data };
+                }
             }
             catch (Exception e)
             {
@@ -34,27 +33,95 @@ namespace RestAPIOracle.Controllers
 
         // GET: api/Factura/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public Object Get(int id)
         {
-            return "value";
+            try
+            {
+                using (var db = new Models.MyFacturaContext())
+                {
+                    var data = db.Facturas.Where(item => item.IDFactura == id).ToList();
+                    return new { data };
+                }
+            }
+            catch (Exception e)
+            {
+                return new { error = e.ToString() };
+            }
         }
 
         // POST: api/Factura
         [HttpPost]
-        public void Post([FromBody]string value)
+        public object Post([FromBody]Models.Factura data)
         {
+            try
+            {
+                using (var db = new Models.MyFacturaContext())
+                {
+                    data.FechaRegistro = DateTime.UtcNow;
+                    data.IDFactura = null;
+                    db.Facturas.Add(data);
+                    var total = db.SaveChanges();
+                    return new { data, total };
+                }
+            }
+            catch (Exception e)
+            {
+                return new { error = e.ToString() };
+            }
         }
 
         // PUT: api/Factura/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public object Put(int id, [FromBody]Models.Factura change)
         {
+            try
+            {
+                using (var db = new Models.MyFacturaContext())
+                {
+                    var data = db.Facturas.Where(item => item.IDFactura == id);
+                    var total = 0;
+                    if (data.Count() > 0)
+                    {
+                        foreach (var item in data)
+                        {
+                            item.IDCliente = change.IDCliente;
+                            item.Total = change.Total;
+                        }
+                        total = db.SaveChanges();
+                    }
+
+                    return new { data = data.ToList(), total };
+                }
+            }
+            catch (Exception e)
+            {
+                return new { error = e.ToString() };
+            }
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public object Delete(int id)
         {
+            try
+            {
+                using (var db = new Models.MyFacturaContext())
+                {
+                    var data = db.Facturas.Where(item => item.IDFactura == id);
+                    var total = 0;
+                    if (data.Count() > 0)
+                    {
+                        db.Facturas.RemoveRange(data);
+                        total = db.SaveChanges();
+                    }
+
+                    return new { data = data.ToList(), total };
+                }
+            }
+            catch (Exception e)
+            {
+                return new { error = e.ToString() };
+            }
         }
     }
 }
