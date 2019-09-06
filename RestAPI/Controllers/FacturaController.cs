@@ -59,8 +59,8 @@ namespace RestAPIOracle.Controllers
             {
                 using (var db = new Models.MyFacturaContext())
                 {
-                    data.FechaRegistro = DateTime.UtcNow;
-                    data.IDFactura = null;
+                    data.Fecha = DateTime.UtcNow;
+                    //data.IDFactura = null;
                     db.Facturas.Add(data);
                     var total = db.SaveChanges();
                     return new { data, total };
