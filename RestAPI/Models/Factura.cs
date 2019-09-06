@@ -24,12 +24,45 @@ namespace RestAPIOracle.Models
         public DateTime Fecha { get; set; }
     }
 
+    [Table("PRODUCTO")]
     public class Producto
     {
         [Key]
+        [Column("IDPRODUCTO")]
         public int IDProducto { get; set; }
-        public DateTime FechaRegistro { get; set; }
+        //public DateTime FechaRegistro { get; set; }
+        [Column("NOMBRE")]
         public string Nombre { get; set; }
+        [Column("PRECIO")]
+        public decimal Precio { get; set; }
+    }
+
+    [Table("CLIENTE")]
+    public class Cliente {
+        [Key]
+        [Column("IDCLIENTE")]
+        public int IDCliente { get; set; }
+        [Column("NOMBRE")]
+        public string Nombre { get; set; }
+        [Column("NIT")]
+        public int NIT { get; set; }
+    }
+
+    [Table("DETALLE")]
+    public class Detalle
+    {
+        [Key]
+        [Column("FACTURA")]
+        int IDFactura { get; set; }
+        [Key]
+        [Column("PRODUCTO")]
+        public int IDProducto { get; set; }
+        [Column("CANTIDAD")]
+        public int Cantidad { get; set; }
+        [Column("IVA")]
+        public decimal IVA { get; set; }
+        [Column("SUBTOTAL")]
+        public decimal Subtotal { get; set; }
     }
 
     public class MyFacturaContext : DbContext
@@ -48,6 +81,8 @@ namespace RestAPIOracle.Models
 
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<Producto> Productos { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Detalle> Detalles { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
