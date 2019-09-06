@@ -20,8 +20,8 @@ namespace RestAPIOracle.Models
         public int IDCliente { get; set; }
         [Column("TOTAL")]
         public int Total { get; set; }
-        [Column("FECHAREGISTRO")]
-        public DateTime FechaRegistro { get; set; }
+        [Column("FECHA")]
+        public DateTime Fecha { get; set; }
     }
 
     public class Producto
@@ -55,7 +55,7 @@ namespace RestAPIOracle.Models
             //string connStr = "Data Source=45.32.22.223:49161/xe;User Id=practicas1;Password=practicas114;";
             //https://stackoverflow.com/a/56343155
             optionsBuilder
-                .UseOracle(@"Data Source=159.65.170.43:49161/xe;User Id=system;Password=oracle;", options => options.UseOracleSQLCompatibility("11"));
+                .UseOracle(@"Data Source=159.65.170.43:49161/xe;User Id=practicas1;Password=practicas114;", options => options.UseOracleSQLCompatibility("11"));
                 
         }
     }
